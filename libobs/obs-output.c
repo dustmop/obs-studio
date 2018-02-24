@@ -20,10 +20,10 @@
 #include "obs.h"
 #include "obs-internal.h"
 
-#if BUILD_CAPTIONS
+//#if BUILD_CAPTIONS
 #include <caption/caption.h>
 #include <caption/avc.h>
-#endif
+//#endif
 
 static inline bool active(const struct obs_output *output)
 {
@@ -960,7 +960,7 @@ static inline bool has_higher_opposing_ts(struct obs_output *output,
 		return output->highest_video_ts > packet->dts_usec;
 }
 
-#if BUILD_CAPTIONS
+//#if BUILD_CAPTIONS
 static const uint8_t nal_start[4] = {0, 0, 0, 1};
 
 static bool add_caption(struct obs_output *output, struct encoder_packet *out)
@@ -1008,7 +1008,7 @@ static bool add_caption(struct obs_output *output, struct encoder_packet *out)
 	output->caption_head = next;
 	return true;
 }
-#endif
+//#endif
 
 static inline void send_interleaved(struct obs_output *output)
 {
