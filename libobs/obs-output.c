@@ -1025,16 +1025,26 @@ static inline void send_interleaved(struct obs_output *output)
 	if (out.type == OBS_ENCODER_VIDEO) {
 		output->total_frames++;
 
-#if BUILD_CAPTIONS
+//#if BUILD_CAPTIONS
 		pthread_mutex_lock(&output->caption_mutex);
 
 		double frame_timestamp = (out.pts * out.timebase_num) /
 			(double)out.timebase_den;
 
+		if (output->caption_head) {
+                  printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
+                  printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
+                  printf("OK!!!!\n");
+                  printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
+                  printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
+                }
+
+
 		/* TODO if output->caption_timestamp is more than 5 seconds
 		 * old, send empty frame */
 		if (output->caption_head &&
 		    output->caption_timestamp <= frame_timestamp) {
+                  printf("!!!! sending caption\n");
 			blog(LOG_INFO,"Sending caption: %f \"%s\"",
 					frame_timestamp,
 					&output->caption_head->text[0]);
@@ -1046,7 +1056,7 @@ static inline void send_interleaved(struct obs_output *output)
 		}
 
 		pthread_mutex_unlock(&output->caption_mutex);
-#endif
+//#endif
 	}
 
 	output->info.encoded_packet(output->context.data, &out);
@@ -1721,9 +1731,15 @@ static bool begin_delayed_capture(obs_output_t *output)
 	return true;
 }
 
+void obs_output_output_caption_text1(obs_output_t *output, const char *text);
+
 bool obs_output_begin_data_capture(obs_output_t *output, uint32_t flags)
 {
 	bool encoded, has_video, has_audio, has_service;
+
+        printf("--------------------------------------\n");
+        printf("--- OBS_OUTPUT_BEGIN_DATA_CAPTURE ---\n");
+        printf("-------------------------------------\n");
 
 	if (!obs_output_valid(output, "obs_output_begin_data_capture"))
 		return false;
@@ -1759,6 +1775,9 @@ bool obs_output_begin_data_capture(obs_output_t *output, uint32_t flags)
 	} else {
 		signal_start(output);
 	}
+
+        obs_output_output_caption_text1(output, "hello1");
+// "error: media_remux: Error reading packet: Resource temporarily unavailable"
 
 	return true;
 }
@@ -2056,7 +2075,7 @@ const char *obs_output_get_id(const obs_output_t *output)
 		? output->info.id : NULL;
 }
 
-#if BUILD_CAPTIONS
+//#if BUILD_CAPTIONS
 static struct caption_text *caption_text_new(const char *text, size_t bytes,
 		struct caption_text *tail, struct caption_text **head)
 {
@@ -2112,7 +2131,7 @@ void obs_output_output_caption_text1(obs_output_t *output, const char *text)
 
 	pthread_mutex_unlock(&output->caption_mutex);
 }
-#endif
+//#endif
 
 float obs_output_get_congestion(obs_output_t *output)
 {

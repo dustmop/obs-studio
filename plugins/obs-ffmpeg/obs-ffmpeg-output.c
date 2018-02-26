@@ -602,6 +602,9 @@ static void ffmpeg_log_callback(void *param, int level, const char *format,
 	UNUSED_PARAMETER(param);
 }
 
+// TODO: Include a header or something, instead of a forward declare.
+void obs_output_output_caption_text1(obs_output_t *output, const char *text);
+
 static void *ffmpeg_output_create(obs_data_t *settings, obs_output_t *output)
 {
 	struct ffmpeg_output *data = bzalloc(sizeof(struct ffmpeg_output));
@@ -616,6 +619,12 @@ static void *ffmpeg_output_create(obs_data_t *settings, obs_output_t *output)
 		goto fail;
 
 	av_log_set_callback(ffmpeg_log_callback);
+
+  printf("*********************************\n");
+  printf("****** FFMPEG OUTPUT CREATE *****\n");
+  printf("*********************************\n");
+
+        obs_output_output_caption_text1(output, "hello1");
 
 	UNUSED_PARAMETER(settings);
 	return data;

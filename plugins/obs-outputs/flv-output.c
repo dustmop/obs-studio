@@ -74,13 +74,22 @@ static void flv_output_destroy(void *data)
 	bfree(stream);
 }
 
+// TODO: Include a header or something, instead of a forward declare.
+void obs_output_output_caption_text1(obs_output_t *output, const char *text);
+
 static void *flv_output_create(obs_data_t *settings, obs_output_t *output)
 {
+  printf("*********************************\n");
+  printf("******* FLV OUTPUT CREATE *******\n");
+  printf("*********************************\n");
 	struct flv_output *stream = bzalloc(sizeof(struct flv_output));
 	stream->output = output;
 	pthread_mutex_init(&stream->mutex, NULL);
 
 	UNUSED_PARAMETER(settings);
+
+        obs_output_output_caption_text1(output, "hello1");
+
 	return stream;
 }
 
